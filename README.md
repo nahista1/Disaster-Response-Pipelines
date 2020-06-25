@@ -1,5 +1,22 @@
 # Disaster Response Pipeline Project
 
+### Summary:
+This is a web application written in python to automatically classify text messages into different categories of disaster management. Furthermore, two visualizations from the data set are available as examples. The project consists of 3 areas.
+
+ETL pipeline (process_data.py) to cleans data and store data for further processing
+ML pipeline (train_classifier.py) to train and save a classifier model
+Flask web app (run.py) for interactive classification based on trained model of arbitary text data and visualisations of some data
+### Requierments:
+You need following python packages:
+
+-  flask
+- plotly
+- sqlalchemy
+- pandas
+- numpy
+- sklearn
+- nltk
+
 ### Instructions:
 1. Run the following commands in the project's root directory to set up your database and model.
 
