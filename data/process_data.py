@@ -15,41 +15,34 @@ def load_data(messages_filepath, categories_filepath):
 
 
 def clean_data(df):
-    ''' clean and return dataframe'''
-    # create a dataframe of the 36 individual category columns
-    categories = df["categories"].str.split(";", expand=True)
+    '''
+    input:
+        df: The merged dataset in previous step.
+    output:
+        df: Dataset after cleaning.
+    '''
+    categories = df.categories.str.split(';', expand = True)
+    row = categories.loc[0]
     
-    # select the first row of the categories dataframe
-    row = categories.iloc[0]
-    
-    # remove last 2 characters of catergory names
-    category_colnames = [val[:-2] for val in row]
-    
-    # rename the columns of `categories`
+    category_colnames = row.apply(lambda x: x[:-2]).values.tolist()
     categories.columns = category_colnames
+    categories.related.loc[categories.related == 'related-2'] = 'related-1'
     
+    # lets loop through columns in the catagories
     for column in categories:
-        # set each value to be the last character of the string
-        categories[column] = categories[column].str[-1]
+        categories[column] = categories[column].astype(str).str[-1]
+        categories[column] = pd.to_numeric(categories[column])
     
-        # convert column from string to numeric
-        categories[column] = pd.to_numeric(categories[column], downcast="integer")
-    
-    # drop the original categories column from `df`
-    df.drop("categories", axis=1, inplace=True)
-    
-    # concatenate the original dataframe with the new `categories` dataframe
-    df = pd.concat([df, categories], axis=1, sort=False)
-    
-    # drop duplicates
-    df.drop(df[df.duplicated(keep="first")].index, inplace=True)
+    df.drop('categories', axis = 1, inplace = True)
+    df = pd.concat([df, categories], axis = 1)
+    df.drop_duplicates(subset = 'id', inplace = True)
     
     return df
 
 def save_data(df, database_filename):
     '''save dataframe as sql database file'''
     engine = create_engine('sqlite:///' + database_filename)
-    df.to_sql('test2', engine, index=False)  
+    df.to_sql('test3', engine, index=False)  
 
 
 def main():
